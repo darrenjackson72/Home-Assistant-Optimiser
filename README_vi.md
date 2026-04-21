@@ -141,7 +141,7 @@ Toàn bộ panel — mọi nhãn, nút, thông báo và lỗi — đều đượ
 
 ### Cách 1: HACS (Khuyến nghị)
 
-[![Open HACS Repository](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=doanlong1412&repository=HA-Optimizer&category=plugin)
+[![Open HACS Repository](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=doanlong1412&repository=HA-Optimizer&category=integration)
 
 > Nếu nút không hoạt động, thêm thủ công:
 1. Mở HACS → **Integrations** → nhấn menu **⋮** → **Custom repositories**

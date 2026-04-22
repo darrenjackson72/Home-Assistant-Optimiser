@@ -1,5 +1,5 @@
-"""Constants for HA Optimizer."""
-DOMAIN = "ha_optimizer"
+"""Constants for HA Optimiser."""
+DOMAIN = "ha_optimiser"
 VERSION = "1.0.0"
 
 # Config keys
@@ -57,6 +57,6 @@ SERVICE_ANALYZE_FINGERPRINT = "analyze_fingerprint"
 SERVICE_COLLECT_BASELINE = "collect_baseline"
 
 # Panel URL
-PANEL_URL = "ha-optimizer"
-PANEL_TITLE = "Optimizer"
+PANEL_URL = "ha-optimiser"
+PANEL_TITLE = "Optimiser"
 PANEL_ICON = "mdi:broom"

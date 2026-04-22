@@ -2,8 +2,8 @@
   "config": {
     "step": {
       "user": {
-        "title": "HA Optimizer Setup",
-        "description": "Configure the Optimizer. It will scan your Home Assistant instance for unused entities, automations, scripts and helpers.",
+        "title": "HA Optimiser Setup",
+        "description": "Configure the Optimiser. It will scan your Home Assistant instance for unused entities, automations, scripts and helpers.",
         "data": {
           "scan_interval_days": "Auto-scan interval (days, 0 = disabled)",
           "stale_days_threshold": "Days without state change to consider stale",
@@ -25,14 +25,14 @@
       "unknown": "Unexpected error"
     },
     "abort": {
-      "already_configured": "HA Optimizer is already configured"
+      "already_configured": "HA Optimiser is already configured"
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "HA Optimizer Options",
-        "description": "Adjust settings for HA Optimizer. Changes take effect immediately after saving.",
+        "title": "HA Optimiser Options",
+        "description": "Adjust settings for HA Optimiser. Changes take effect immediately after saving.",
         "data": {
           "scan_interval_days": "Auto-scan interval (days, 0 = disabled)",
           "stale_days_threshold": "Days without state change to consider stale",
@@ -84,7 +84,7 @@
       "description": "Returns the last scan results as a service response, including trash (soft-deleted) entities."
     },
     "analyze_fingerprint": {
-      "name": "Analyze Fingerprint",
+      "name": "Analyse Fingerprint",
       "description": "Compares today's HA behaviour against its own historical baseline — detects anomalies in state writes, automation triggers, and integration reconnects."
     },
     "collect_baseline": {
@@ -92,11 +92,11 @@
       "description": "Captures yesterday's metrics snapshot and saves it to the baseline store. Normally runs automatically at 00:05 each day. Call manually on first install."
     },
     "analyze_recorder": {
-      "name": "Analyze Recorder DB",
+      "name": "Analyse Recorder DB",
       "description": "Queries the recorder database to find top-writing entities, wasteful records, and suggests recorder YAML optimizations."
     },
     "analyze_dashboard": {
-      "name": "Analyze Dashboard",
+      "name": "Analyse Dashboard",
       "description": "Reads Lovelace dashboard config from .storage to detect heavy cards, missing entities, and other performance issues."
     },
     "analyze_storms": {
@@ -104,7 +104,7 @@
       "description": "Finds entities that are updating their state abnormally fast, causing database bloat and browser performance issues."
     },
     "analyze_dead_code": {
-      "name": "Analyze Automation Dead Code",
+      "name": "Analyse Automation Dead Code",
       "description": "Scans automations for broken triggers, actions, or conditions that reference entities that no longer exist."
     },
     "analyze_health": {
@@ -112,7 +112,7 @@
       "description": "Scores integration health based on reconnect frequency, battery levels, and unavailability patterns over the last 7 days."
     },
     "analyze_addons": {
-      "name": "Analyze Add-ons",
+      "name": "Analyse Add-ons",
       "description": "Queries the Supervisor API to return host resource usage (CPU, RAM, disk, OS) and the full add-on list with per-addon state, version, update status, and runtime stats."
     }
   }

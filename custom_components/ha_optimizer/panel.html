@@ -896,7 +896,7 @@
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <h1><span class="icon">🧹</span> HA Optimizer</h1>
+  <h1><span class="icon">🧹</span> HA Optimiser</h1>
   <div class="topbar-controls">
   <!-- THEME DROPDOWN -->
   <div class="theme-dropdown-wrap" id="themeDropdownWrap">
@@ -1439,7 +1439,7 @@ async function callService(domain, service, data = {}) {
       }
       return {};
     } catch(wsErr) {
-      console.warn('[HAOptimizer] WS sendMessagePromise failed:', wsErr.message ?? wsErr);
+      console.warn('[HAOptimiser] WS sendMessagePromise failed:', wsErr.message ?? wsErr);
     }
   }
 
@@ -1454,7 +1454,7 @@ async function callService(domain, service, data = {}) {
       const result = await hass.callService(domain, service, data, undefined, false, true);
       return { service_response: result ?? {} };
     } catch(wsErr2) {
-      console.warn('[HAOptimizer] hass.callService fallback failed:', wsErr2.message ?? wsErr2);
+      console.warn('[HAOptimiser] hass.callService fallback failed:', wsErr2.message ?? wsErr2);
     }
   }
 
@@ -1538,9 +1538,9 @@ window.addEventListener('load', async () => {
   // Debug: log hass connection state to console
   const hass = _getHass();
   if (hass) {
-    console.info('[HAOptimizer] ✅ hass object found. connection:', !!hass.connection, 'sendMessagePromise:', !!hass.connection?.sendMessagePromise);
+    console.info('[HAOptimiser] ✅ hass object found. connection:', !!hass.connection, 'sendMessagePromise:', !!hass.connection?.sendMessagePromise);
   } else {
-    console.warn('[HAOptimizer] ⚠️ hass object NOT found — will try REST fallback');
+    console.warn('[HAOptimiser] ⚠️ hass object NOT found — will try REST fallback');
   }
   _updateConnStatus();
   await loadLastResults();
@@ -1551,7 +1551,7 @@ window.addEventListener('load', async () => {
 // (Token management removed — authentication handled by HA hass object)
 
 async function loadLastResults() {
-  const cached = localStorage.getItem('ha_optimizer_results');
+  const cached = localStorage.getItem('ha_Optimiser_results');
   if (cached) {
     try {
       const parsed = JSON.parse(cached);
@@ -1582,7 +1582,7 @@ async function triggerScan() {
   try {
     toast('info', `🔍 ${t('scanningMsg')}`);
 
-    const raw = await callService('ha_optimizer', 'scan', {});
+    const raw = await callService('ha_Optimiser', 'scan', {});
     console.debug('[PurgeEngine] scan raw response:', JSON.stringify(raw).slice(0, 500));
 
     let data = extractData(raw);
@@ -1592,7 +1592,7 @@ async function triggerScan() {
       toast('info', `🔄 ${t('scanFetchingResults')}`);
       await new Promise(r => setTimeout(r, 500));
       try {
-        const raw2 = await callService('ha_optimizer', 'get_results', {});
+        const raw2 = await callService('ha_Optimiser', 'get_results', {});
         console.debug('[PurgeEngine] get_results raw:', JSON.stringify(raw2).slice(0, 500));
         data = extractData(raw2);
       } catch(e) {
@@ -1604,12 +1604,12 @@ async function triggerScan() {
       if (data.results.length > 0) {
         displayResults(data.results);
         updateStats(data.statistics || {});
-        localStorage.setItem('ha_optimizer_results', JSON.stringify(data));
+        localStorage.setItem('ha_Optimiser_results', JSON.stringify(data));
         toast('success', `✅ ${t('scanDone', data.results.length)}`);
       } else {
         displayResults([]);
         updateStats(data.statistics || {});
-        localStorage.setItem('ha_optimizer_results', JSON.stringify(data));
+        localStorage.setItem('ha_Optimiser_results', JSON.stringify(data));
         toast('success', `✅ ${t('scanClean')}`);
       }
     } else {
@@ -1630,12 +1630,12 @@ async function triggerScan() {
 // Returns true if results were successfully fetched and displayed
 async function fetchAndDisplayResults() {
   try {
-    const raw = await callService('ha_optimizer', 'get_results', {});
+    const raw = await callService('ha_Optimiser', 'get_results', {});
     const data = extractData(raw);
     if (data && Array.isArray(data.results) && data.results.length > 0) {
       displayResults(data.results);
       updateStats(data.statistics || {});
-      localStorage.setItem('ha_optimizer_results', JSON.stringify(data));
+      localStorage.setItem('ha_Optimiser_results', JSON.stringify(data));
       return true;
     }
     return false;
@@ -2173,7 +2173,7 @@ async function executePurge() {
 
   try {
     toast('info', t('analyzing'));
-    const raw = await callService('ha_optimizer', 'purge', {
+    const raw = await callService('ha_Optimiser', 'purge', {
       entity_ids: ids,
       soft_delete: !hardDeleteMode,
     });
@@ -2206,12 +2206,12 @@ async function executePurge() {
 
     // Sync localStorage scan cache
     try {
-      const cached = localStorage.getItem('ha_optimizer_results');
+      const cached = localStorage.getItem('ha_Optimiser_results');
       if (cached) {
         const parsed = JSON.parse(cached);
         if (parsed.results) {
           parsed.results = parsed.results.filter(r => !processed.includes(r.entity_id));
-          localStorage.setItem('ha_optimizer_results', JSON.stringify(parsed));
+          localStorage.setItem('ha_Optimiser_results', JSON.stringify(parsed));
         }
       }
     } catch(e) {}
@@ -2259,7 +2259,7 @@ async function loadSoftDeleted() {
   const body = document.getElementById('softBody');
   body.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:20px; color:var(--text-muted)">${t('loading')}</td></tr>`;
   try {
-    const raw = await callService('ha_optimizer', 'get_results', {});
+    const raw = await callService('ha_Optimiser', 'get_results', {});
     const data = extractData(raw);
 
     let softDeleted = [];
@@ -2296,7 +2296,7 @@ async function loadSoftDeleted() {
 async function restoreEntity(id, btn) {
   if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
   try {
-    const raw = await callService('ha_optimizer', 'restore', { entity_id: id });
+    const raw = await callService('ha_Optimiser', 'restore', { entity_id: id });
     const result = extractData(raw) || {};
 
     if (result.success === false) {
@@ -2334,7 +2334,7 @@ async function hardDeleteEntity(id, btn) {
   if (!confirm(t('confirmHardDelete', id))) return;
   if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
   try {
-    await callService('ha_optimizer', 'purge', { entity_ids: [id], soft_delete: false });
+    await callService('ha_Optimiser', 'purge', { entity_ids: [id], soft_delete: false });
     toast('success', `${t('purgeSuccessHard', 1)} (${id})`);
 
     // Remove from trash UI
@@ -2350,12 +2350,12 @@ async function hardDeleteEntity(id, btn) {
 
     // Sync localStorage
     try {
-      const cached = localStorage.getItem('ha_optimizer_results');
+      const cached = localStorage.getItem('ha_Optimiser_results');
       if (cached) {
         const parsed = JSON.parse(cached);
         if (parsed.results) {
           parsed.results = parsed.results.filter(r => r.entity_id !== id);
-          localStorage.setItem('ha_optimizer_results', JSON.stringify(parsed));
+          localStorage.setItem('ha_Optimiser_results', JSON.stringify(parsed));
         }
       }
     } catch(e) {}
@@ -2377,7 +2377,7 @@ async function triggerRecorderAnalysis() {
   container.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div><p style="color:var(--text-muted)">${t('recorderLoading')}</p></div>`;
 
   try {
-    const raw = await callService('ha_optimizer', 'analyze_recorder', {});
+    const raw = await callService('ha_Optimiser', 'analyze_recorder', {});
     const data = extractData(raw);
     if (!data) throw new Error(t('noDataReceived'));
     _tabCacheSave('recorder', data);
@@ -2506,7 +2506,7 @@ async function triggerDashboardAnalysis() {
   container.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div><p style="color:var(--text-muted)">${t('dashboardLoading')}</p></div>`;
 
   try {
-    const raw = await callService('ha_optimizer', 'analyze_dashboard', {});
+    const raw = await callService('ha_Optimiser', 'analyze_dashboard', {});
     const data = extractData(raw);
     if (!data) throw new Error(t('noDataReceived'));
     _tabCacheSave('dashboard', data);
@@ -2861,7 +2861,7 @@ async function triggerStormAnalysis() {
   btn.disabled = true; btn.innerHTML = t('analyzing');
   c.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div><p style="color:var(--text-muted)">${t('recorderLoading')}</p></div>`;
   try {
-    const raw = await callService('ha_optimizer', 'analyze_storms', {});
+    const raw = await callService('ha_Optimiser', 'analyze_storms', {});
     const data = extractData(raw);
     if (!data) throw new Error(t('noDataReceived'));
     _tabCacheSave('storms', data);
@@ -2932,7 +2932,7 @@ async function triggerDeadCodeAnalysis() {
   btn.disabled = true; btn.innerHTML = t('analyzing');
   c.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div><p style="color:var(--text-muted)">${t('deadcodeLoading')}</p></div>`;
   try {
-    const raw = await callService('ha_optimizer', 'analyze_dead_code', {});
+    const raw = await callService('ha_Optimiser', 'analyze_dead_code', {});
     const data = extractData(raw);
     if (!data) throw new Error(t('noDataReceived'));
     _tabCacheSave('deadcode', data);
@@ -3004,7 +3004,7 @@ async function triggerHealthAnalysis() {
   btn.disabled = true; btn.innerHTML = t('analyzing');
   c.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div><p style="color:var(--text-muted)">${t('healthAnalyzingConn')}</p></div>`;
   try {
-    const raw = await callService('ha_optimizer', 'analyze_health', {});
+    const raw = await callService('ha_Optimiser', 'analyze_health', {});
     const data = extractData(raw);
     if (!data) throw new Error(t('noDataReceived'));
     _tabCacheSave('health', data);
@@ -3194,12 +3194,12 @@ function renderHealthResults(d, ts) {
 // ================================================================
 const TAB_CACHE_VERSION = 'v1';
 const TAB_CACHE_KEYS = {
-  recorder:    `ha_optimizer_recorder_${TAB_CACHE_VERSION}`,
-  dashboard:   `ha_optimizer_dashboard_${TAB_CACHE_VERSION}`,
-  storms:      `ha_optimizer_storms_${TAB_CACHE_VERSION}`,
-  deadcode:    `ha_optimizer_deadcode_${TAB_CACHE_VERSION}`,
-  health:      `ha_optimizer_health_${TAB_CACHE_VERSION}`,
-  fingerprint: `ha_optimizer_fingerprint_${TAB_CACHE_VERSION}`,
+  recorder:    `ha_Optimiser_recorder_${TAB_CACHE_VERSION}`,
+  dashboard:   `ha_Optimiser_dashboard_${TAB_CACHE_VERSION}`,
+  storms:      `ha_Optimiser_storms_${TAB_CACHE_VERSION}`,
+  deadcode:    `ha_Optimiser_deadcode_${TAB_CACHE_VERSION}`,
+  health:      `ha_Optimiser_health_${TAB_CACHE_VERSION}`,
+  fingerprint: `ha_Optimiser_fingerprint_${TAB_CACHE_VERSION}`,
 };
 
 function _tabCacheSave(tab, data) {
@@ -3262,7 +3262,7 @@ async function triggerFingerprintAnalysis() {
   btn.innerHTML = t('analyzing');
   c.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div><p style="color:var(--text-muted)">${t('fingerprintAnalyzingComp')}</p></div>`;
   try {
-    const raw = await callService('ha_optimizer', 'analyze_fingerprint', {});
+    const raw = await callService('ha_Optimiser', 'analyze_fingerprint', {});
     const data = extractData(raw);
     if (!data) throw new Error(t('noDataReceived'));
     _tabCacheSave('fingerprint', data);
@@ -3283,7 +3283,7 @@ async function triggerCollectBaseline() {
   btn.disabled = true;
   btn.innerHTML = t('baselineCollecting');
   try {
-    const raw = await callService('ha_optimizer', 'collect_baseline', {});
+    const raw = await callService('ha_Optimiser', 'collect_baseline', {});
     const data = extractData(raw);
     const days = data?.baseline_days ?? '?';
     toast('success', `✅ ${t('baselineSaved', days)}`);
@@ -3554,12 +3554,12 @@ function setTheme(name) {
   document.getElementById('themeDropdownMenu')?.classList.remove('open');
   document.getElementById('themeDropdownBtn')?.classList.remove('open');
 
-  try { localStorage.setItem('ha_optimizer_theme', name); } catch(e) {}
+  try { localStorage.setItem('ha_Optimiser_theme', name); } catch(e) {}
 }
 
 function loadSavedTheme() {
   try {
-    const saved = localStorage.getItem('ha_optimizer_theme') || 'default';
+    const saved = localStorage.getItem('ha_Optimiser_theme') || 'default';
     buildThemeMenu();
     setTheme(saved);
   } catch(e) { buildThemeMenu(); }
@@ -3590,7 +3590,7 @@ const LANGUAGES = [
 
 const I18N = {
   en: {
-    appTitle: '🧹 HA Optimizer',
+    appTitle: '🧹 HA Optimiser',
     donate: 'Donate',
     tickerBackup: '⚠️ Please <strong>Backup</strong> your HA before Scan & Purge — hard deletes cannot be undone!',
     tickerSupport: '💜 If this tool is helpful, please <strong>support the project</strong> to keep new features coming!',
@@ -4048,7 +4048,7 @@ function setLang(code) {
   // Apply translations to DOM
   _applyTranslations();
 
-  try { localStorage.setItem('ha_optimizer_lang', code); } catch(e) {}
+  try { localStorage.setItem('ha_Optimiser_lang', code); } catch(e) {}
 }
 
 function _applyTranslations() {
@@ -4240,7 +4240,7 @@ function _refreshEmptyStates() {
 }
 
 // ================================================================
-// ADDON TAB — calls ha_optimizer.analyze_addons (backend → Supervisor)
+// ADDON TAB — calls ha_Optimiser.analyze_addons (backend → Supervisor)
 // ================================================================
 
 let _addonRealtimeTimer = null;
@@ -4255,7 +4255,7 @@ function toggleAddonRealtime() {
 async function _addonRealtimeTick() {
   if (!_addonRealtimeOn) return;
   try {
-    const raw  = await callService('ha_optimizer', 'analyze_addons', {});
+    const raw  = await callService('ha_Optimiser', 'analyze_addons', {});
     const data = extractData(raw);
     if (data) {
       _lastAddonData = data;
@@ -4296,7 +4296,7 @@ const SYSBAR_INTERVAL = 10000; // refresh every 10 s
 
 async function _fetchSysBarOnly() {
   try {
-    const raw  = await callService('ha_optimizer', 'analyze_addons', {});
+    const raw  = await callService('ha_Optimiser', 'analyze_addons', {});
     const data = extractData(raw);
     if (data && !data.error) {
       _lastAddonData = data;
@@ -4335,7 +4335,7 @@ async function loadAddonTab() {
   wrap.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div><p style="color:var(--text-muted)">${t('addonLoading')}</p></div>`;
 
   try {
-    const raw  = await callService('ha_optimizer', 'analyze_addons', {});
+    const raw  = await callService('ha_Optimiser', 'analyze_addons', {});
     const data = extractData(raw);
     if (!data)      throw new Error('Service không trả dữ liệu — kiểm tra log HA.');
     if (data.error) throw new Error(data.error);
@@ -4375,7 +4375,7 @@ async function _supervisorPost(path) {
       const result = await hass.callWS({ type: 'supervisor/api', endpoint: path, method: 'post' });
       if (result?.result === 'ok' || result) return result?.data ?? result;
     } catch(wsErr) {
-      console.warn('[HAOptimizer] callWS supervisor failed, trying REST:', wsErr);
+      console.warn('[HAOptimiser] callWS supervisor failed, trying REST:', wsErr);
     }
   }
   // Fallback: direct REST (works in ingress / trusted)
@@ -4568,7 +4568,7 @@ window.addEventListener('resize', () => {
 
 function loadSavedLang() {
   try {
-    const saved = localStorage.getItem('ha_optimizer_lang') || 'vi';
+    const saved = localStorage.getItem('ha_Optimiser_lang') || 'vi';
     buildLangMenu();
     const lang = LANGUAGES.find(l => l.code === saved) || LANGUAGES[0];
     currentLang = lang.code;

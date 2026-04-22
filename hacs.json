@@ -3,6 +3,6 @@
   "description": "Smart cleanup, analysis and health-check integration for Home Assistant. Scan, analyse and purge unused entities, automations, scripts and helpers.",
   "render_readme": true,
   "homeassistant": "2023.1.0",
-  "country": [],
+  "country": [UK],
   "iot_class": "local_polling"
 }

@@ -1,4 +1,4 @@
-# 🧹 HA Optimizer
+# 🧹 HA Optimiser
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 ![version](https://img.shields.io/badge/version-1.0.0-blue)
@@ -12,7 +12,7 @@
 
 **The smart cleanup, analysis and health-check integration for Home Assistant.**
 
-Most Home Assistant instances accumulate hundreds of dead entities, broken automations, database bloat, and silently-failing devices over time — and nobody notices until something breaks. **HA Optimizer** surfaces all of it automatically, so you can clean up with confidence.
+Most Home Assistant instances accumulate hundreds of dead entities, broken automations, database bloat, and silently-failing devices over time — and nobody notices until something breaks. **HA Optimiser** surfaces all of it automatically, so you can clean up with confidence.
 
 > ⚡ *Set it up once. Let it scan. Know exactly what's cluttering your HA instance — and clean it up safely.*
 
@@ -28,11 +28,11 @@ Most Home Assistant instances accumulate hundreds of dead entities, broken autom
 
 ## 🔥 Why You Need This
 
-| Problem | HA Optimizer |
+| Problem | HA Optimiser |
 |---|---|
 | 💀 Dead entities from removed devices | Detects & flags them with risk level |
 | 🤖 Broken automations nobody knows about | Dead code scan — triggers/actions pointing to nothing |
-| 🗄️ Recorder DB growing out of control | Finds top writers, suggests YAML optimizations |
+| 🗄️ Recorder DB growing out of control | Finds top writers, suggests YAML optimisations |
 | 📊 Dashboard cards calling unavailable entities | Full Lovelace audit |
 | 🌩️ Entities spamming state updates 100×/minute | State storm detector |
 | 🔌 Integration that keeps disconnecting | Integration health scorer with reconnect analysis |
@@ -59,7 +59,7 @@ Most Home Assistant instances accumulate hundreds of dead entities, broken autom
 - Detects already-disabled entities and still tracks them properly
 
 ### 🧩 Add-on Manager *(new)*
-A full-featured add-on control panel built right into the optimizer — no more jumping between HA menus.
+A full-featured add-on control panel built right into the Optimiser — no more jumping between HA menus.
 
 - Lists **all installed add-ons** sorted by priority: updates available first, then running, then stopped
 - Shows **live CPU % and RAM usage** per add-on, refreshing every 5 seconds automatically — no page reload needed
@@ -86,14 +86,14 @@ Compares today's HA behaviour **against your own historical baseline** (up to 30
 
 Confidence level grows with more baseline days (20% → 99%). Completely private — compares only against **your own** past data, never against other users.
 
-### 🗄️ Recorder DB Analyzer
+### 🗄️ Recorder DB Analyser
 - Queries the recorder SQLite/MySQL database directly
 - Identifies **top-writing entities** (DB bloat culprits)
 - Detects **wasteful records** — many writes, few distinct states
-- Generates a ready-to-paste **YAML snippet** for `recorder:` optimizations
+- Generates a ready-to-paste **YAML snippet** for `recorder:` optimisations
 - Domain-level write statistics
 
-### 📊 Lovelace Dashboard Analyzer
+### 📊 Lovelace Dashboard Analyser
 - Reads `.storage/lovelace*` config files
 - Flags: heavy/complex cards, missing entities, duplicate entity references, uninstalled custom cards, Jinja2 template cards, WebSocket push pressure
 - Cross-references with recorder data to identify dashboard-driven DB waste
@@ -103,13 +103,13 @@ Confidence level grows with more baseline days (20% → 99%). Completely private
 - Includes severity rating, ratio vs normal, and suggested fixes
 - Catches misconfigured sensors before they fill your database
 
-### 🤖 Automation Dead Code Analyzer
+### 🤖 Automation Dead Code Analyser
 - Scans all UI-created automations for **broken references**
 - Checks: triggers pointing to removed devices, actions calling deleted entities/services, conditions using non-existent entity states
 - Silent failures in automations are exposed before they cause problems
 
 ### 🔌 Integration Health Scorer
-- Analyzes **7 days of recorder data** per integration
+- Analyses **7 days of recorder data** per integration
 - Scores each integration (0–100) based on reconnect frequency and unavailability patterns
 - Flags abnormal disconnection bursts vs rolling average
 - Detailed score breakdown showing exactly which factors caused deductions
@@ -144,24 +144,24 @@ The entire panel UI — every label, button, message, and error — is fully tra
 ### Method 1: HACS (Recommended)
 **Step 1** — Add this repository to HACS:
 
-[![Open HACS Repository](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=doanlong1412&repository=HA-Optimizer&category=integration)
+[![Open HACS Repository](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=doanlong1412&repository=HA-Optimiser&category=integration)
 
 > If the button doesn't work, add manually:
 1. Open HACS → **Integrations** → click the **⋮** menu → **Custom repositories**
 2. Add this repository URL and select category **Integration**
-3. Find **HA Optimizer** in the HACS store and click **Download**
+3. Find **HA Optimiser** in the HACS store and click **Download**
 4. Restart Home Assistant
-5. Go to **Settings → Devices & Services → Add Integration** → search for **HA Optimizer**
+5. Go to **Settings → Devices & Services → Add Integration** → search for **HA Optimiser**
 6. Complete the setup wizard
 
 ### Method 2: Manual
 
 1. Download or clone this repository
-2. Copy the `ha_optimizer/` folder into `config/custom_components/`:
+2. Copy the `ha_Optimiser/` folder into `config/custom_components/`:
    ```
    config/
    └── custom_components/
-       └── ha_optimizer/
+       └── ha_Optimiser/
            ├── __init__.py
            ├── const.py
            ├── config_flow.py
@@ -175,7 +175,7 @@ The entire panel UI — every label, button, message, and error — is fully tra
            └── panel.html
    ```
 3. Restart Home Assistant
-4. Go to **Settings → Devices & Services → Add Integration** → search for **HA Optimizer**
+4. Go to **Settings → Devices & Services → Add Integration** → search for **HA Optimiser**
 
 ---
 
@@ -191,13 +191,13 @@ During setup you will be asked for:
 | Soft delete days | `7` | Days in trash before auto-permanent deletion |
 | Exclude device classes | *(safety defaults)* | Comma-separated list of device classes to never suggest deleting |
 
-All settings can be changed at any time via **Settings → Devices & Services → HA Optimizer → Configure**.
+All settings can be changed at any time via **Settings → Devices & Services → HA Optimiser → Configure**.
 
 ---
 
 ## 🚀 Using the Panel
 
-Open the **🧹 HA Optimizer** panel from the HA sidebar. The panel connects automatically using the HA WebSocket session — **no token or extra authentication required**. Everything is done through the UI — no YAML or manual service calls needed.
+Open the **🧹 HA Optimiser** panel from the HA sidebar. The panel connects automatically using the HA WebSocket session — **no token or extra authentication required**. Everything is done through the UI — no YAML or manual service calls needed.
 
 > ✅ **No Long-Lived Access Token needed.** The panel uses Home Assistant's own authenticated connection, the same one your browser already has open.
 
@@ -209,7 +209,7 @@ The panel has **9 tabs** across the top:
 
 The main tab. See your system health at a glance and manage unused entities.
 
-1. **Click `🔍 Start Scan`** — the scanner analyzes all entities, automations, scripts and helpers (takes a few seconds)
+1. **Click `🔍 Start Scan`** — the scanner analyses all entities, automations, scripts and helpers (takes a few seconds)
 2. The **Overview Dashboard** appears showing:
    - **Health Score** gauge (0–100)
    - Total entities, candidates to review, breakdown by risk (🔴 High / 🟡 Medium / 🟢 Low)
@@ -226,7 +226,7 @@ The main tab. See your system health at a glance and manage unused entities.
 
 ### 📊 Recorder Tab
 
-1. Click **`📊 Analyze Recorder`**
+1. Click **`📊 Analyse Recorder`**
 2. See DB size, top-writing entities, wasteful records and write stats by domain
 3. Copy the **ready-to-paste YAML block** into `configuration.yaml` under `recorder:` and restart HA to reduce DB growth
 
@@ -234,7 +234,7 @@ The main tab. See your system health at a glance and manage unused entities.
 
 ### 🖥️ Dashboard Tab
 
-1. Click **`🖥️ Analyze Dashboard`**
+1. Click **`🖥️ Analyse Dashboard`**
 2. The panel reads your Lovelace `.storage/lovelace*` files and reports: heavy cards, missing/unavailable entities, duplicate references, uninstalled custom cards, Jinja2 template cards
 3. Issues are marked **Critical** or **Warning**
 
@@ -252,7 +252,7 @@ The main tab. See your system health at a glance and manage unused entities.
 
 ### 🔍 Dead Code Tab
 
-1. Click **`🔍 Analyze Dead Code`**
+1. Click **`🔍 Analyse Dead Code`**
 2. UI-created automations are scanned for broken references: triggers pointing to removed devices, actions targeting deleted entities/services, conditions using non-existent states
 3. Each automation with issues shows a direct **"Open Editor"** link to fix it immediately
 
@@ -279,7 +279,7 @@ Compares today's HA behaviour against your **own** historical baseline — priva
 
 **Running an analysis:**
 
-1. Click **`🫆 Analyze Fingerprint`**
+1. Click **`🫆 Analyse Fingerprint`**
 2. Results show confidence level, anomaly count, hours elapsed today (extrapolated to 24h for fair comparison)
 3. Each anomaly shows today's value vs baseline average with the method used (σ or IQR)
 4. ✅ green = normal · ⚠️ orange = anomaly detected
@@ -313,21 +313,21 @@ All soft-deleted entities appear here with the date they were disabled.
 
 ```yaml
 automation:
-  alias: "HA Optimizer - Weekly Scan"
+  alias: "HA Optimiser - Weekly Scan"
   trigger:
     - platform: time
       at: "03:00:00"
     - platform: template
       value_template: "{{ now().weekday() == 6 }}"  # Sunday
   action:
-    - service: ha_optimizer.scan
+    - service: ha_Optimiser.scan
     - wait_for_trigger:
         platform: event
-        event_type: ha_optimizer_scan_complete
+        event_type: ha_Optimiser_scan_complete
       timeout: "00:05:00"
     - service: notify.mobile_app_your_phone
       data:
-        title: "🧹 HA Optimizer"
+        title: "🧹 HA Optimiser"
         message: >
           Scan complete. Found {{ trigger.event.data.statistics.candidates_found }}
           candidates. Health score: {{ trigger.event.data.statistics.health_score }}/100
@@ -339,18 +339,18 @@ automation:
 
 | Service | Description |
 |---|---|
-| `ha_optimizer.scan` | Full scan — entities, automations, scripts, helpers |
-| `ha_optimizer.purge` | Disable (soft) or permanently delete entities |
-| `ha_optimizer.restore` | Re-enable a soft-deleted entity |
-| `ha_optimizer.get_results` | Return last scan results as service response |
-| `ha_optimizer.analyze_recorder` | Recorder DB deep analysis + YAML suggestions |
-| `ha_optimizer.analyze_dashboard` | Lovelace dashboard audit |
-| `ha_optimizer.analyze_storms` | State storm / high-frequency writer detection |
-| `ha_optimizer.analyze_dead_code` | Broken trigger/action/condition scanner |
-| `ha_optimizer.analyze_health` | Integration health scoring (7-day window) |
-| `ha_optimizer.analyze_fingerprint` | Anomaly detection vs personal baseline |
-| `ha_optimizer.analyze_addons` | Add-on list + live CPU/RAM + host resource data |
-| `ha_optimizer.collect_baseline` | Manual baseline snapshot collection |
+| `ha_Optimiser.scan` | Full scan — entities, automations, scripts, helpers |
+| `ha_Optimiser.purge` | Disable (soft) or permanently delete entities |
+| `ha_Optimiser.restore` | Re-enable a soft-deleted entity |
+| `ha_Optimiser.get_results` | Return last scan results as service response |
+| `ha_Optimiser.analyse_recorder` | Recorder DB deep analysis + YAML suggestions |
+| `ha_Optimiser.analyse_dashboard` | Lovelace dashboard audit |
+| `ha_Optimiser.analyse_storms` | State storm / high-frequency writer detection |
+| `ha_Optimiser.analyse_dead_code` | Broken trigger/action/condition scanner |
+| `ha_Optimiser.analyse_health` | Integration health scoring (7-day window) |
+| `ha_Optimiser.analyse_fingerprint` | Anomaly detection vs personal baseline |
+| `ha_Optimiser.analyse_addons` | Add-on list + live CPU/RAM + host resource data |
+| `ha_Optimiser.collect_baseline` | Manual baseline snapshot collection |
 
 ---
 
@@ -383,10 +383,10 @@ automation:
 - 🔍 Smart entity scanner with risk levels and health score
 - 🗑️ Soft delete + restore + auto-expiry trash bin tab
 - 📡 Fingerprint anomaly detection (σ / IQR, 30-day baseline)
-- 🗄️ Recorder DB analyzer with YAML suggestions
+- 🗄️ Recorder DB analyser with YAML suggestions
 - 📊 Lovelace dashboard auditor
 - 🌩️ State storm detector
-- 🤖 Automation dead code analyzer
+- 🤖 Automation dead code analyser
 - 🔌 Integration health scorer with reconnect analysis
 - 🧩 Add-on manager with live CPU/RAM per add-on (5s auto-refresh)
 - 🖥️ Real-time system gauges (CPU / RAM / Disk) — always visible
@@ -412,7 +412,7 @@ Designed and developed by **[@doanlong1412](https://github.com/doanlong1412)** f
 
 ## ☕ Support
 
-If HA Optimizer saves you time and keeps your Home Assistant clean, consider buying me a coffee!
+If HA Optimiser saves you time and keeps your Home Assistant clean, consider buying me a coffee!
 
 [![PayPal](https://img.shields.io/badge/Donate-PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.com/paypalme/doanlong1412)
 

@@ -83,7 +83,7 @@
       "name": "Get last scan results",
       "description": "Returns the last scan results as a service response, including trash (soft-deleted) entities."
     },
-    "analyze_fingerprint": {
+    "analyse_fingerprint": {
       "name": "Analyse Fingerprint",
       "description": "Compares today's HA behaviour against its own historical baseline — detects anomalies in state writes, automation triggers, and integration reconnects."
     },
@@ -91,27 +91,27 @@
       "name": "Collect Baseline",
       "description": "Captures yesterday's metrics snapshot and saves it to the baseline store. Normally runs automatically at 00:05 each day. Call manually on first install."
     },
-    "analyze_recorder": {
+    "analyse_recorder": {
       "name": "Analyse Recorder DB",
-      "description": "Queries the recorder database to find top-writing entities, wasteful records, and suggests recorder YAML optimizations."
+      "description": "Queries the recorder database to find top-writing entities, wasteful records, and suggests recorder YAML optimisations."
     },
-    "analyze_dashboard": {
+    "analyse_dashboard": {
       "name": "Analyse Dashboard",
       "description": "Reads Lovelace dashboard config from .storage to detect heavy cards, missing entities, and other performance issues."
     },
-    "analyze_storms": {
+    "analyse_storms": {
       "name": "Detect State Storms",
       "description": "Finds entities that are updating their state abnormally fast, causing database bloat and browser performance issues."
     },
-    "analyze_dead_code": {
+    "analyse_dead_code": {
       "name": "Analyse Automation Dead Code",
       "description": "Scans automations for broken triggers, actions, or conditions that reference entities that no longer exist."
     },
-    "analyze_health": {
+    "analyse_health": {
       "name": "Check Integration Health",
       "description": "Scores integration health based on reconnect frequency, battery levels, and unavailability patterns over the last 7 days."
     },
-    "analyze_addons": {
+    "analyse_addons": {
       "name": "Analyse Add-ons",
       "description": "Queries the Supervisor API to return host resource usage (CPU, RAM, disk, OS) and the full add-on list with per-addon state, version, update status, and runtime stats."
     }

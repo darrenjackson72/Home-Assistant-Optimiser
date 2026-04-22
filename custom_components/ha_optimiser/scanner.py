@@ -1,4 +1,4 @@
-"""Data Scanner - Registry and Reference Scanner for HA Optimizer."""
+"""Data Scanner - Registry and Reference Scanner for HA Optimiser."""
 from __future__ import annotations
 
 import logging
@@ -103,7 +103,7 @@ class DataScanner:
 
     async def async_scan(self) -> dict[str, Any]:
         """Run full scan and return structured results."""
-        _LOGGER.info("HA Optimizer: Starting scan...")
+        _LOGGER.info("HA Optimiser: Starting scan...")
 
         ent_reg = er.async_get(self.hass)
         dev_reg = dr.async_get(self.hass)
@@ -123,13 +123,13 @@ class DataScanner:
 
         for entry in ent_reg.entities.values():
             try:
-                result = self._analyze_entity(
+                result = self._analyse_entity(
                     entry, dev_reg, references, history_map, active_entry_ids
                 )
                 if result:
                     results.append(result)
             except Exception as exc:
-                _LOGGER.warning("Error analyzing entity %s: %s", entry.entity_id, exc)
+                _LOGGER.warning("Error analysing entity %s: %s", entry.entity_id, exc)
 
         # Scan automations
         automation_results = await self._scan_automations(references)
@@ -150,7 +150,7 @@ class DataScanner:
 
         health_score = max(0, 100 - int((found / max(total, 1)) * 100))
 
-        _LOGGER.info("HA Optimizer: Scan complete. Found %d candidates from %d total.", found, total)
+        _LOGGER.info("HA Optimiser: Scan complete. Found %d candidates from %d total.", found, total)
 
         return {
             "results": [r.to_dict() for r in results],
@@ -171,7 +171,7 @@ class DataScanner:
         "counter", "timer", "schedule",
     }
 
-    def _analyze_entity(
+    def _analyse_entity(
         self,
         entry: er.RegistryEntry,
         dev_reg: dr.DeviceRegistry,
@@ -179,7 +179,7 @@ class DataScanner:
         history_map: dict,
         active_entry_ids: set,
     ) -> ScanResult | None:
-        """Analyze a single entity — 4-method detection from Orphan Entity Cleaner.
+        """Analyse a single entity — 4-method detection from Orphan Entity Cleaner.
 
         Method 1 — orphaned_timestamp : official HA field set after restart
         Method 2 — dead_config_entry  : config_entry_id points to removed integration
@@ -634,13 +634,13 @@ _KNOWN_DOMAINS = {
 # RECORDER ANALYZER
 # ================================================================
 
-class RecorderAnalyzer:
-    """Analyzes recorder DB to find expensive entities and suggest optimizations."""
+class RecorderAnalyser:
+    """Analyses recorder DB to find expensive entities and suggest optimisations."""
 
     def __init__(self, hass):
         self.hass = hass
 
-    async def async_analyze(self) -> dict:
+    async def async_analyse(self) -> dict:
         return await self.hass.async_add_executor_job(self._run_analysis)
 
     def _run_analysis(self) -> dict:
@@ -799,7 +799,7 @@ class RecorderAnalyzer:
 
         except Exception as exc:
             result["error"] = str(exc)
-            _LOGGER.warning("RecorderAnalyzer error: %s", exc)
+            _LOGGER.warning("RecorderAnalyser error: %s", exc)
 
         return result
 
@@ -808,7 +808,7 @@ class RecorderAnalyzer:
 # DASHBOARD ANALYZER
 # ================================================================
 
-class DashboardAnalyzer:
+class DashboardAnalyser:
     """
     Phân tích toàn diện Lovelace dashboards từ .storage/lovelace*.
 
@@ -880,7 +880,7 @@ class DashboardAnalyzer:
     def __init__(self, hass):
         self.hass = hass
 
-    async def async_analyze(self) -> dict:
+    async def async_analyse(self) -> dict:
         return await self.hass.async_add_executor_job(self._run_analysis)
 
     # ------------------------------------------------------------------
@@ -1119,7 +1119,7 @@ class DashboardAnalyzer:
             # ── NEW #1 & #3: WebSocket pressure + Recorder cross-ref ──
             # Cả hai cần DB query → chỉ chạy nếu recorder available
             try:
-                ws_pressure, recorder_xref = self._analyze_recorder_crossref(
+                ws_pressure, recorder_xref = self._analyse_recorder_crossref(
                     all_entity_refs_set, per_view_entity_sets
                 )
                 result["ws_pressure"]     = ws_pressure
@@ -1133,14 +1133,14 @@ class DashboardAnalyzer:
 
         except Exception as exc:
             result["error"] = str(exc)
-            _LOGGER.warning("DashboardAnalyzer error: %s", exc)
+            _LOGGER.warning("DashboardAnalyser error: %s", exc)
 
         return result
 
     # ------------------------------------------------------------------
     # NEW — Recorder cross-reference + WebSocket pressure (analysis #1 & #3)
     # ------------------------------------------------------------------
-    def _analyze_recorder_crossref(
+    def _analyse_recorder_crossref(
         self,
         dashboard_entities: set[str],
         per_view_entity_sets: list[tuple[str, str, set[str]]],
@@ -1528,7 +1528,7 @@ class StateStormDetector:
     def __init__(self, hass):
         self.hass = hass
 
-    async def async_analyze(self) -> dict:
+    async def async_analyse(self) -> dict:
         return await self.hass.async_add_executor_job(self._run)
 
     def _run(self) -> dict:
@@ -1658,13 +1658,13 @@ class AutomationDeadCodeTracer:
     def __init__(self, hass):
         self.hass = hass
 
-    async def async_analyze(self) -> dict:
+    async def async_analyse(self) -> dict:
         return await self.hass.async_add_executor_job(self._run)
 
     def _run(self) -> dict:
         result = {
             "dead_automations": [],
-            "total_analyzed": 0,
+            "total_analysed": 0,
             "error": None,
         }
         try:
@@ -1679,7 +1679,7 @@ class AutomationDeadCodeTracer:
                     data = json.load(f)
                 automations = data.get("data", {}).get("items", [])
 
-            result["total_analyzed"] = len(automations)
+            result["total_analysed"] = len(automations)
 
             # All known entity_ids in HA right now
             existing = {s.entity_id for s in self.hass.states.async_all()}
@@ -1834,9 +1834,9 @@ class AutomationDeadCodeTracer:
 # INTEGRATION HEALTH SCORE
 # ================================================================
 
-class IntegrationHealthAnalyzer:
+class IntegrationHealthAnalyser:
     """
-    Multi-criteria integration health analyzer.
+    Multi-criteria integration health analyser.
 
     Scoring breakdown (100 points total):
       A) Connectivity   — unavailable/unknown events over 7 days       (max -35)
@@ -1851,7 +1851,7 @@ class IntegrationHealthAnalyzer:
     def __init__(self, hass):
         self.hass = hass
 
-    async def async_analyze(self) -> dict:
+    async def async_analyse(self) -> dict:
         return await self.hass.async_add_executor_job(self._run)
 
     def _run(self) -> dict:
@@ -2098,7 +2098,7 @@ class IntegrationHealthAnalyzer:
 
         except Exception as exc:
             result["error"] = str(exc)
-            _LOGGER.warning("IntegrationHealthAnalyzer error: %s", exc)
+            _LOGGER.warning("IntegrationHealthAnalyser error: %s", exc)
         return result
 
     def _diagnose(

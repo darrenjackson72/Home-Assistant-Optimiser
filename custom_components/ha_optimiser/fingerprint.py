@@ -1,11 +1,5 @@
-"""Fingerprint Anomaly Detector — so sánh HA hôm nay với chính nó tuần trước.
+"""Fingerprint Anomaly Detector
 
-Kiến trúc:
-  DailyProfiler   — chạy lúc 00:05, chụp snapshot metrics của ngày hôm qua
-  FingerprintStore — lưu rolling window 30 ngày vào .storage/
-  SigmaDetector   — phát hiện anomaly: today vs rolling mean ± 2σ (IQR nếu <7 ngày)
-  CorrelationLinker — khớp timestamp anomaly với HA events (update, restart, reload)
-  FingerprintAnalyzer — entry point chính, gọi từ service analyze_fingerprint
 """
 from __future__ import annotations
 
@@ -24,7 +18,7 @@ from homeassistant.util import dt as dt_util
 
 _LOGGER = logging.getLogger(__name__)
 
-FINGERPRINT_STORE_KEY = "ha_optimizer_fingerprint"
+FINGERPRINT_STORE_KEY = "ha_optimiser_fingerprint"
 STORAGE_VERSION = 1
 BASELINE_DAYS_WINDOW = 30   # keep at most 30 days of history
 MIN_DAYS_FOR_SIGMA = 7      # need at least 7 days for σ; otherwise use IQR
@@ -401,10 +395,10 @@ class CorrelationLinker:
 # FINGERPRINT ANALYZER — entry point chính
 # ================================================================
 
-class FingerprintAnalyzer:
+class FingerprintAnalyser:
     """
     Điểm vào chính cho tính năng Fingerprint.
-    Gọi từ service handle_analyze_fingerprint.
+    Gọi từ service handle_analyse_fingerprint.
     """
 
     def __init__(self, hass: HomeAssistant, store: "FingerprintStore"):
@@ -414,7 +408,7 @@ class FingerprintAnalyzer:
         self._detector = SigmaDetector()
         self._linker = CorrelationLinker()
 
-    async def async_analyze(self) -> dict:
+    async def async_analyse(self) -> dict:
         """
         Chạy phân tích fingerprint cho hôm nay.
         Trả về dict với anomalies, baseline_info, today_metrics.
@@ -472,9 +466,9 @@ class FingerprintAnalyzer:
             date_str = metrics.get("date")
             if date_str:
                 await self.store.async_save_day(date_str, metrics)
-                _LOGGER.info("FingerprintAnalyzer: baseline saved for %s", date_str)
+                _LOGGER.info("FingerprintAnalyser: baseline saved for %s", date_str)
         else:
-            _LOGGER.warning("FingerprintAnalyzer: failed to collect baseline for yesterday")
+            _LOGGER.warning("FingerprintAnalyser: failed to collect baseline for yesterday")
 
     async def _profile_today(self) -> dict | None:
         """Profiler cho ngày hôm nay (từ 00:00 đến giờ hiện tại)."""
@@ -502,7 +496,7 @@ class FingerprintAnalyzer:
 
             metrics: dict[str, Any] = {"date": today_str, "partial": True}
 
-            # Giờ đã qua trong ngày hôm nay — để normalize so sánh
+            # Giờ đã qua trong ngày hôm nay — để normalise so sánh
             hours_elapsed = now.hour + now.minute / 60.0
             metrics["hours_elapsed"] = round(hours_elapsed, 1)
 
@@ -620,7 +614,7 @@ class FingerprintAnalyzer:
             return metrics
 
         except Exception as exc:
-            _LOGGER.warning("FingerprintAnalyzer._run_today error: %s", exc)
+            _LOGGER.warning("FingerprintAnalyser._run_today error: %s", exc)
             return None
 
     def _build_sparklines(self, history: list[dict], today: dict) -> dict[str, list]:

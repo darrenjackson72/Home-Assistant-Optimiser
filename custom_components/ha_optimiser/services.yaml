@@ -3,7 +3,7 @@ scan:
   description: >
     Scans the Home Assistant instance for unused entities, automations,
     scripts, and helpers. Results are saved to storage and fired as
-    the ha_optimizer_scan_complete event.
+    the ha_optimiser_scan_complete event.
   fields: {}
 
 purge:
@@ -53,16 +53,16 @@ get_results:
     to process results programmatically.
   fields: {}
 
-analyze_recorder:
-  name: Analyze Recorder DB
+analyse_recorder:
+  name: Analyse Recorder DB
   description: >
     Queries the recorder database to identify top-writing entities,
     wasteful records (many writes, few distinct states), domain
-    statistics, and generates a YAML snippet for recorder optimizations.
+    statistics, and generates a YAML snippet for recorder optimisations.
   fields: {}
 
-analyze_dashboard:
-  name: Analyze Dashboard
+analyse_dashboard:
+  name: Analyse Dashboard
   description: >
     Reads Lovelace dashboard config from .storage/lovelace* to detect
     heavy cards, overloaded views, missing or unavailable entities,
@@ -71,7 +71,7 @@ analyze_dashboard:
     waste. Supports all default and named dashboards.
   fields: {}
 
-analyze_storms:
+analyse_storms:
   name: Detect State Storms
   description: >
     Finds entities that are updating their state abnormally fast
@@ -80,24 +80,24 @@ analyze_storms:
     Results include severity, ratio vs baseline, and fix suggestions.
   fields: {}
 
-analyze_dead_code:
-  name: Analyze Automation Dead Code
+analyse_dead_code:
+  name: Analyse Automation Dead Code
   description: >
     Scans all UI-created automations for broken triggers, actions, and
     conditions that reference entities, devices, or services that no
     longer exist. Helps identify automations that will silently fail.
   fields: {}
 
-analyze_health:
+analyse_health:
   name: Check Integration Health
   description: >
-    Analyzes integration health by examining unavailability and reconnect
+    Analyses integration health by examining unavailability and reconnect
     patterns over the last 7 days. Identifies devices with weak batteries,
     poor signal, or abnormal disconnection rates and scores each integration.
   fields: {}
 
-analyze_fingerprint:
-  name: Analyze Fingerprint
+analyse_fingerprint:
+  name: Analyse Fingerprint
   description: >
     Compares today's HA system behaviour against its own historical baseline
     (up to 30 days). Detects anomalies in state writes, automation trigger
@@ -115,8 +115,8 @@ collect_baseline:
     without waiting for the scheduled run.
   fields: {}
 
-analyze_addons:
-  name: Analyze Add-ons
+analyse_addons:
+  name: Analyse Add-ons
   description: >
     Queries the Supervisor API to return host resource usage (CPU, RAM, disk, OS)
     and the full add-on list with per-addon state, version, update availability,

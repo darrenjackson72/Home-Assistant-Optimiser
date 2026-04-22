@@ -1,4 +1,4 @@
-"""Optimizer - Execution layer for HA Optimizer."""
+"""Optimiser - Execution layer for HA Optimiser."""
 from __future__ import annotations
 
 import logging

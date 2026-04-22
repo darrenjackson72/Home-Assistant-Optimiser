@@ -1,4 +1,4 @@
-"""HA Optimizer - Smart cleanup tool for Home Assistant."""
+"""HA Optimiser - Smart cleanup tool for Home Assistant."""
 from __future__ import annotations
 
 import logging
@@ -32,20 +32,20 @@ from .const import (
     SERVICE_PURGE,
     SERVICE_RESTORE,
     SERVICE_SCAN,
-    SERVICE_ANALYZE_FINGERPRINT,
+    SERVICE_ANALYSE_FINGERPRINT,
     SERVICE_COLLECT_BASELINE,
 )
 from .purge_engine import PurgeEngine
-from .scanner import DataScanner, RecorderAnalyzer, DashboardAnalyzer, StateStormDetector, AutomationDeadCodeTracer, IntegrationHealthAnalyzer
+from .scanner import DataScanner, RecorderAnalyser, DashboardAnalyser, StateStormDetector, AutomationDeadCodeTracer, IntegrationHealthAnalyser
 from .store import PurgeStore
-from .fingerprint import FingerprintAnalyzer, FingerprintStore
+from .fingerprint import FingerprintAnalyser, FingerprintStore
 
-SERVICE_ANALYZE_RECORDER = "analyze_recorder"
-SERVICE_ANALYZE_DASHBOARD = "analyze_dashboard"
-SERVICE_ANALYZE_STORMS = "analyze_storms"
-SERVICE_ANALYZE_DEAD_CODE = "analyze_dead_code"
-SERVICE_ANALYZE_HEALTH = "analyze_health"
-SERVICE_ANALYZE_ADDONS = "analyze_addons"
+SERVICE_ANALYSE_RECORDER = "analyse_recorder"
+SERVICE_ANALYSE_DASHBOARD = "analyse_dashboard"
+SERVICE_ANALYSE_STORMS = "analyse_storms"
+SERVICE_ANALYSE_DEAD_CODE = "analyse_dead_code"
+SERVICE_ANALYSE_HEALTH = "analyse_health"
+SERVICE_ANALYSE_ADDONS = "analyse_addons"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -58,13 +58,13 @@ PLATFORMS = []
 
 def _copy_panel_to_www(hass: HomeAssistant) -> bool:
     """
-    Copy panel.html from custom_components/ha_optimizer/
-    to config/www/ha_optimizer/ so HA can serve it via /local/.
+    Copy panel.html from custom_components/ha_optimiser/
+    to config/www/ha_optimiser/ so HA can serve it via /local/.
 
     Returns True if copy succeeded (or file was already up to date).
     """
     src = Path(__file__).parent / "panel.html"
-    www_dir = Path(hass.config.config_dir) / "www" / "ha_optimizer"
+    www_dir = Path(hass.config.config_dir) / "www" / "ha_optimiser"
     dst = www_dir / "panel.html"
 
     if not src.exists():
@@ -96,7 +96,7 @@ def _copy_panel_to_www(hass: HomeAssistant) -> bool:
 # ================================================================
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
-    """Set up HA Optimizer from configuration.yaml (not needed - config flow only)."""
+    """Set up HA Optimiser from configuration.yaml (not needed - config flow only)."""
     return True
 
 
@@ -106,16 +106,16 @@ def _entry_options(entry: ConfigEntry) -> dict:
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up HA Optimizer from a config entry."""
+    """Set up HA Optimiser from a config entry."""
     hass.data.setdefault(DOMAIN, {})
 
-    # ── Copy panel.html to www/ so it's served at /local/ha_optimizer/panel.html
+    # ── Copy panel.html to www/ so it's served at /local/ha_optimiser/panel.html
     panel_ok = await hass.async_add_executor_job(_copy_panel_to_www, hass)
     if not panel_ok:
         _LOGGER.warning(
-            "panel.html could not be copied to www/ha_optimizer/. "
+            "panel.html could not be copied to www/ha_optimiser/. "
             "The sidebar panel may not load. "
-            "Manually copy panel.html to config/www/ha_optimizer/panel.html as a workaround."
+            "Manually copy panel.html to config/www/ha_optimiser/panel.html as a workaround."
         )
 
     store = PurgeStore(hass)
@@ -123,7 +123,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     fp_store = FingerprintStore(hass)
     await fp_store.async_load()
-    fp_analyzer = FingerprintAnalyzer(hass, fp_store)
+    fp_analyser = FingerprintAnalyser(hass, fp_store)
 
     hass.data[DOMAIN][entry.entry_id] = {
         "store": store,
@@ -131,7 +131,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         "engine": PurgeEngine(hass),
         "unsub_interval": None,
         "fp_store": fp_store,
-        "fp_analyzer": fp_analyzer,
+        "fp_analyser": fp_analyser,
         "unsub_fp_daily": None,
     }
 
@@ -145,7 +145,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             sidebar_icon=PANEL_ICON,
             frontend_url_path=PANEL_URL,
             config={
-                "url": "/local/ha_optimizer/panel.html",
+                "url": "/local/ha_optimiser/panel.html",
                 "require_admin": True,
             },
             require_admin=True,
@@ -173,7 +173,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Schedule daily fingerprint baseline collection at 00:05 each day
     _schedule_daily_baseline(hass, entry)
 
-    _LOGGER.info("HA Optimizer setup complete.")
+    _LOGGER.info("HA Optimiser setup complete.")
     return True
 
 
@@ -194,10 +194,10 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # Remove services
     for svc in [SERVICE_SCAN, SERVICE_PURGE, SERVICE_RESTORE, SERVICE_GET_RESULTS,
-                SERVICE_ANALYZE_RECORDER, SERVICE_ANALYZE_DASHBOARD,
-                SERVICE_ANALYZE_STORMS, SERVICE_ANALYZE_DEAD_CODE, SERVICE_ANALYZE_HEALTH,
-                SERVICE_ANALYZE_ADDONS,
-                SERVICE_ANALYZE_FINGERPRINT, SERVICE_COLLECT_BASELINE]:
+                SERVICE_ANALYSE_RECORDER, SERVICE_ANALYSE_DASHBOARD,
+                SERVICE_ANALYSE_STORMS, SERVICE_ANALYSE_DEAD_CODE, SERVICE_ANALYSE_HEALTH,
+                SERVICE_ANALYSE_ADDONS,
+                SERVICE_ANALYSE_FINGERPRINT, SERVICE_COLLECT_BASELINE]:
         hass.services.async_remove(DOMAIN, svc)
 
     return True
@@ -215,7 +215,7 @@ def _register_services(hass: HomeAssistant, entry: ConfigEntry):
         data = hass.data[DOMAIN][entry.entry_id]
         opts = _entry_options(entry)
         scanner = DataScanner(hass, opts)
-        _LOGGER.info("HA Optimizer: Scan triggered via service")
+        _LOGGER.info("HA Optimiser: Scan triggered via service")
         results = await scanner.async_scan()
         await data["store"].async_save_scan_results(results)
         hass.bus.async_fire(EVENT_SCAN_COMPLETE, {
@@ -271,32 +271,32 @@ def _register_services(hass: HomeAssistant, entry: ConfigEntry):
             "soft_deleted": soft,
         }
 
-    async def handle_analyze_recorder(call: ServiceCall):
-        """Analyze recorder DB and return optimization suggestions."""
-        analyzer = RecorderAnalyzer(hass)
-        return await analyzer.async_analyze()
+    async def handle_analyse_recorder(call: ServiceCall):
+        """Analyse recorder DB and return optimisation suggestions."""
+        analyser = RecorderAnalyser(hass)
+        return await analyser.async_analyse()
 
-    async def handle_analyze_dashboard(call: ServiceCall):
-        """Analyze Lovelace dashboards for heavy cards and missing entities."""
-        analyzer = DashboardAnalyzer(hass)
-        return await analyzer.async_analyze()
+    async def handle_analyse_dashboard(call: ServiceCall):
+        """Analyse Lovelace dashboards for heavy cards and missing entities."""
+        analyser = DashboardAnalyser(hass)
+        return await analyser.async_analyse()
 
-    async def handle_analyze_storms(call: ServiceCall):
+    async def handle_analyse_storms(call: ServiceCall):
         """Detect entities with abnormally high state change frequency."""
-        analyzer = StateStormDetector(hass)
-        return await analyzer.async_analyze()
+        analyser = StateStormDetector(hass)
+        return await analyser.async_analyse()
 
-    async def handle_analyze_dead_code(call: ServiceCall):
+    async def handle_analyse_dead_code(call: ServiceCall):
         """Find automations with broken triggers, actions or conditions."""
-        analyzer = AutomationDeadCodeTracer(hass)
-        return await analyzer.async_analyze()
+        analyser = AutomationDeadCodeTracer(hass)
+        return await analyser.async_analyse()
 
-    async def handle_analyze_health(call: ServiceCall):
+    async def handle_analyse_health(call: ServiceCall):
         """Score integration health based on reconnect patterns."""
-        analyzer = IntegrationHealthAnalyzer(hass)
-        return await analyzer.async_analyze()
+        analyser = IntegrationHealthAnalyser(hass)
+        return await analyser.async_analyse()
 
-    async def handle_analyze_addons(call: ServiceCall):
+    async def handle_analyse_addons(call: ServiceCall):
         """Fetch addon list + realtime host resource usage via Supervisor API."""
         import aiohttp
         import asyncio
@@ -305,7 +305,7 @@ def _register_services(hass: HomeAssistant, entry: ConfigEntry):
         if not token:
             return {"host": {}, "addons": [], "error": "SUPERVISOR_TOKEN not found — requires HAOS or Supervised"}
 
-        headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+        headers = {"Authorisation": f"Bearer {token}", "Content-Type": "application/json"}
         base = "http://supervisor"
         T_FAST = aiohttp.ClientTimeout(total=8)
         T_SLOW = aiohttp.ClientTimeout(total=15)
@@ -432,7 +432,7 @@ def _register_services(hass: HomeAssistant, entry: ConfigEntry):
             disk_total_b = host_info_raw.get("disk_total")
             disk_free_b  = host_info_raw.get("disk_free")
             _LOGGER.info(
-                "HA Optimizer disk raw: used=%r total=%r free=%r (host_info keys=%s)",
+                "HA Optimiser disk raw: used=%r total=%r free=%r (host_info keys=%s)",
                 disk_used_b, disk_total_b, disk_free_b,
                 list(host_info_raw.keys()),
             )
@@ -485,7 +485,7 @@ def _register_services(hass: HomeAssistant, entry: ConfigEntry):
                         _LOGGER.debug("statvfs(%s) failed: %s", _mount, _exc)
 
             _LOGGER.info(
-                "HA Optimizer Addons: cpu=%.1f%% ram=%s/%s MB disk=%s/%s MB",
+                "HA Optimiser Addons: cpu=%.1f%% ram=%s/%s MB disk=%s/%s MB",
                 cpu_pct or 0, ram_used_mb, ram_total_mb, disk_used_mb, disk_total_mb,
             )
 
@@ -545,15 +545,15 @@ def _register_services(hass: HomeAssistant, entry: ConfigEntry):
 
         return {"host": host_info, "addons": addons}
 
-    async def handle_analyze_fingerprint(call: ServiceCall):
+    async def handle_analyse_fingerprint(call: ServiceCall):
         """Run fingerprint anomaly detection — compare today vs self."""
         data = hass.data[DOMAIN][entry.entry_id]
-        return await data["fp_analyzer"].async_analyze()
+        return await data["fp_analyser"].async_analyse()
 
     async def handle_collect_baseline(call: ServiceCall):
         """Manually trigger baseline collection for yesterday (useful on first install)."""
         data = hass.data[DOMAIN][entry.entry_id]
-        await data["fp_analyzer"].async_collect_daily_baseline()
+        await data["fp_analyser"].async_collect_daily_baseline()
         fp_store: FingerprintStore = data["fp_store"]
         return {
             "success": True,
@@ -594,37 +594,37 @@ def _register_services(hass: HomeAssistant, entry: ConfigEntry):
             supports_response=SupportsResponse.OPTIONAL,
         )
         hass.services.async_register(
-            DOMAIN, SERVICE_ANALYZE_RECORDER, handle_analyze_recorder,
+            DOMAIN, SERVICE_ANALYSE_RECORDER, handle_analyse_recorder,
             schema=vol.Schema({}),
             supports_response=SupportsResponse.ONLY,
         )
         hass.services.async_register(
-            DOMAIN, SERVICE_ANALYZE_DASHBOARD, handle_analyze_dashboard,
+            DOMAIN, SERVICE_ANALYSE_DASHBOARD, handle_analyse_dashboard,
             schema=vol.Schema({}),
             supports_response=SupportsResponse.ONLY,
         )
         hass.services.async_register(
-            DOMAIN, SERVICE_ANALYZE_STORMS, handle_analyze_storms,
+            DOMAIN, SERVICE_ANALYSE_STORMS, handle_analyse_storms,
             schema=vol.Schema({}),
             supports_response=SupportsResponse.ONLY,
         )
         hass.services.async_register(
-            DOMAIN, SERVICE_ANALYZE_DEAD_CODE, handle_analyze_dead_code,
+            DOMAIN, SERVICE_ANALYSE_DEAD_CODE, handle_analyse_dead_code,
             schema=vol.Schema({}),
             supports_response=SupportsResponse.ONLY,
         )
         hass.services.async_register(
-            DOMAIN, SERVICE_ANALYZE_HEALTH, handle_analyze_health,
+            DOMAIN, SERVICE_ANALYSE_HEALTH, handle_analyse_health,
             schema=vol.Schema({}),
             supports_response=SupportsResponse.ONLY,
         )
         hass.services.async_register(
-            DOMAIN, SERVICE_ANALYZE_ADDONS, handle_analyze_addons,
+            DOMAIN, SERVICE_ANALYSE_ADDONS, handle_analyse_addons,
             schema=vol.Schema({}),
             supports_response=SupportsResponse.ONLY,
         )
         hass.services.async_register(
-            DOMAIN, SERVICE_ANALYZE_FINGERPRINT, handle_analyze_fingerprint,
+            DOMAIN, SERVICE_ANALYSE_FINGERPRINT, handle_analyse_fingerprint,
             schema=vol.Schema({}),
             supports_response=SupportsResponse.ONLY,
         )
@@ -639,31 +639,31 @@ def _register_services(hass: HomeAssistant, entry: ConfigEntry):
             schema=vol.Schema({}),
         )
         hass.services.async_register(
-            DOMAIN, SERVICE_ANALYZE_RECORDER, handle_analyze_recorder,
+            DOMAIN, SERVICE_ANALYSE_RECORDER, handle_analyse_recorder,
             schema=vol.Schema({}),
         )
         hass.services.async_register(
-            DOMAIN, SERVICE_ANALYZE_DASHBOARD, handle_analyze_dashboard,
+            DOMAIN, SERVICE_ANALYSE_DASHBOARD, handle_analyse_dashboard,
             schema=vol.Schema({}),
         )
         hass.services.async_register(
-            DOMAIN, SERVICE_ANALYZE_STORMS, handle_analyze_storms,
+            DOMAIN, SERVICE_ANALYSE_STORMS, handle_analyse_storms,
             schema=vol.Schema({}),
         )
         hass.services.async_register(
-            DOMAIN, SERVICE_ANALYZE_DEAD_CODE, handle_analyze_dead_code,
+            DOMAIN, SERVICE_ANALYSE_DEAD_CODE, handle_analyse_dead_code,
             schema=vol.Schema({}),
         )
         hass.services.async_register(
-            DOMAIN, SERVICE_ANALYZE_HEALTH, handle_analyze_health,
+            DOMAIN, SERVICE_ANALYSE_HEALTH, handle_analyse_health,
             schema=vol.Schema({}),
         )
         hass.services.async_register(
-            DOMAIN, SERVICE_ANALYZE_ADDONS, handle_analyze_addons,
+            DOMAIN, SERVICE_ANALYSE_ADDONS, handle_analyse_addons,
             schema=vol.Schema({}),
         )
         hass.services.async_register(
-            DOMAIN, SERVICE_ANALYZE_FINGERPRINT, handle_analyze_fingerprint,
+            DOMAIN, SERVICE_ANALYSE_FINGERPRINT, handle_analyse_fingerprint,
             schema=vol.Schema({}),
         )
         hass.services.async_register(
@@ -683,7 +683,7 @@ def _schedule_daily_baseline(hass: HomeAssistant, entry: ConfigEntry):
     async def _collect_cb(now):
         data = hass.data[DOMAIN].get(entry.entry_id)
         if data:
-            await data["fp_analyzer"].async_collect_daily_baseline()
+            await data["fp_analyser"].async_collect_daily_baseline()
 
     unsub = async_track_time_change(hass, _collect_cb, hour=0, minute=5, second=0)
     hass.data[DOMAIN][entry.entry_id]["unsub_fp_daily"] = unsub

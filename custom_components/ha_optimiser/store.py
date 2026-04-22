@@ -1,4 +1,4 @@
-"""Store manager for HA Optimizer - handles persistent scan results and soft-delete tracking."""
+"""Store manager for HA Optimiser - handles persistent scan results and soft-delete tracking."""
 from __future__ import annotations
 
 import logging

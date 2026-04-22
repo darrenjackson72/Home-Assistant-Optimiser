@@ -8,8 +8,6 @@
 ![languages](https://img.shields.io/badge/UI-12%20languages-blueviolet)
 ![themes](https://img.shields.io/badge/themes-11%20built--in-ff69b4)
 
-> 🇻🇳 **Phiên bản tiếng Việt:** [README_vi.md](README_vi.md)
-
 **The smart cleanup, analysis and health-check integration for Home Assistant.**
 
 Most Home Assistant instances accumulate hundreds of dead entities, broken automations, database bloat, and silently-failing devices over time — and nobody notices until something breaks. **HA Optimiser** surfaces all of it automatically, so you can clean up with confidence.

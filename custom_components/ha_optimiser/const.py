@@ -53,7 +53,7 @@ EVENT_PURGE_COMPLETE = f"{DOMAIN}_purge_complete"
 
 # Fingerprint
 FINGERPRINT_STORE_KEY = f"{DOMAIN}_fingerprint"
-SERVICE_ANALYZE_FINGERPRINT = "analyze_fingerprint"
+SERVICE_ANALYSE_FINGERPRINT = "analyse_fingerprint"
 SERVICE_COLLECT_BASELINE = "collect_baseline"
 
 # Panel URL

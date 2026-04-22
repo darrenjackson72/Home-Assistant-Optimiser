@@ -1,4 +1,4 @@
-# 🧹 HA Optimizer
+# 🧹 HA Optimiser
 
 **Smart cleanup, analysis and health-check for Home Assistant.**
 
